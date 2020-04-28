@@ -40,7 +40,7 @@ func NewWithBaseURI(baseURI string, ) BaseClient {
 }
 
     // Create sends the create request.
-    func (client BaseClient) Create(ctx context.Context, body CreateAttributes) (result CreateResult, err error) {
+    func (client BaseClient) Create(ctx context.Context, body CreateAttributes) (result Attributes, err error) {
         if tracing.IsEnabled() {
             ctx = tracing.StartSpan(ctx, fqdn + "/BaseClient.Create")
             defer func() {
@@ -106,7 +106,132 @@ func NewWithBaseURI(baseURI string, ) BaseClient {
 
     // CreateResponder handles the response to the Create request. The method always
     // closes the http.Response Body.
-    func (client BaseClient) CreateResponder(resp *http.Response) (result CreateResult, err error) {
+    func (client BaseClient) CreateResponder(resp *http.Response) (result Attributes, err error) {
+        err = autorest.Respond(
+        resp,
+        client.ByInspecting(),
+        azure.WithErrorUnlessStatusCode(http.StatusOK),
+        autorest.ByUnmarshallingJSON(&result),
+        autorest.ByClosing())
+        result.Response = autorest.Response{Response: resp}
+            return
+        }
+
+    // Delete sends the delete request.
+    func (client BaseClient) Delete(ctx context.Context, body Attributes) (result autorest.Response, err error) {
+        if tracing.IsEnabled() {
+            ctx = tracing.StartSpan(ctx, fqdn + "/BaseClient.Delete")
+            defer func() {
+                sc := -1
+                if result.Response != nil {
+                    sc = result.Response.StatusCode
+                }
+                tracing.EndSpan(ctx, sc, err)
+            }()
+        }
+            req, err := client.DeletePreparer(ctx, body)
+        if err != nil {
+        err = autorest.NewErrorWithError(err, "jobs.BaseClient", "Delete", nil , "Failure preparing request")
+        return
+        }
+
+                resp, err := client.DeleteSender(req)
+                if err != nil {
+                result.Response = resp
+                err = autorest.NewErrorWithError(err, "jobs.BaseClient", "Delete", resp, "Failure sending request")
+                return
+                }
+
+                result, err = client.DeleteResponder(resp)
+                if err != nil {
+                err = autorest.NewErrorWithError(err, "jobs.BaseClient", "Delete", resp, "Failure responding to request")
+                }
+
+        return
+        }
+
+        // DeletePreparer prepares the Delete request.
+        func (client BaseClient) DeletePreparer(ctx context.Context, body Attributes) (*http.Request, error) {
+            preparer := autorest.CreatePreparer(
+        autorest.AsContentType("application/json; charset=utf-8"),
+        autorest.AsPost(),
+        autorest.WithBaseURL(client.BaseURI),
+        autorest.WithPath("/jobs/delete"),
+        autorest.WithJSON(body))
+        return preparer.Prepare((&http.Request{}).WithContext(ctx))
+        }
+
+        // DeleteSender sends the Delete request. The method will close the
+        // http.Response Body if it receives an error.
+        func (client BaseClient) DeleteSender(req *http.Request) (*http.Response, error) {
+                return client.Send(req, autorest.DoRetryForStatusCodes(client.RetryAttempts, client.RetryDuration, autorest.StatusCodesForRetry...))
+                }
+
+    // DeleteResponder handles the response to the Delete request. The method always
+    // closes the http.Response Body.
+    func (client BaseClient) DeleteResponder(resp *http.Response) (result autorest.Response, err error) {
+        err = autorest.Respond(
+        resp,
+        client.ByInspecting(),
+        azure.WithErrorUnlessStatusCode(http.StatusOK),
+        autorest.ByClosing())
+        result.Response = resp
+            return
+        }
+
+    // Get sends the get request.
+    func (client BaseClient) Get(ctx context.Context, body Attributes) (result GetResult, err error) {
+        if tracing.IsEnabled() {
+            ctx = tracing.StartSpan(ctx, fqdn + "/BaseClient.Get")
+            defer func() {
+                sc := -1
+                if result.Response.Response != nil {
+                    sc = result.Response.Response.StatusCode
+                }
+                tracing.EndSpan(ctx, sc, err)
+            }()
+        }
+            req, err := client.GetPreparer(ctx, body)
+        if err != nil {
+        err = autorest.NewErrorWithError(err, "jobs.BaseClient", "Get", nil , "Failure preparing request")
+        return
+        }
+
+                resp, err := client.GetSender(req)
+                if err != nil {
+                result.Response = autorest.Response{Response: resp}
+                err = autorest.NewErrorWithError(err, "jobs.BaseClient", "Get", resp, "Failure sending request")
+                return
+                }
+
+                result, err = client.GetResponder(resp)
+                if err != nil {
+                err = autorest.NewErrorWithError(err, "jobs.BaseClient", "Get", resp, "Failure responding to request")
+                }
+
+        return
+        }
+
+        // GetPreparer prepares the Get request.
+        func (client BaseClient) GetPreparer(ctx context.Context, body Attributes) (*http.Request, error) {
+            preparer := autorest.CreatePreparer(
+        autorest.AsContentType("application/json; charset=utf-8"),
+        autorest.AsGet(),
+        autorest.WithBaseURL(client.BaseURI),
+        autorest.WithPath("/jobs/get"),
+        autorest.WithJSON(body))
+        return preparer.Prepare((&http.Request{}).WithContext(ctx))
+        }
+
+        // GetSender sends the Get request. The method will close the
+        // http.Response Body if it receives an error.
+        func (client BaseClient) GetSender(req *http.Request) (*http.Response, error) {
+                return client.Send(req, autorest.DoRetryForStatusCodes(client.RetryAttempts, client.RetryDuration, autorest.StatusCodesForRetry...))
+                }
+
+    // GetResponder handles the response to the Get request. The method always
+    // closes the http.Response Body.
+    func (client BaseClient) GetResponder(resp *http.Response) (result GetResult, err error) {
         err = autorest.Respond(
         resp,
         client.ByInspecting(),
@@ -175,6 +300,85 @@ func NewWithBaseURI(baseURI string, ) BaseClient {
         autorest.ByUnmarshallingJSON(&result),
         autorest.ByClosing())
         result.Response = autorest.Response{Response: resp}
+            return
+        }
+
+    // Post sends the post request.
+    func (client BaseClient) Post(ctx context.Context, body ResetAttributes) (result autorest.Response, err error) {
+        if tracing.IsEnabled() {
+            ctx = tracing.StartSpan(ctx, fqdn + "/BaseClient.Post")
+            defer func() {
+                sc := -1
+                if result.Response != nil {
+                    sc = result.Response.StatusCode
+                }
+                tracing.EndSpan(ctx, sc, err)
+            }()
+        }
+                if err := validation.Validate([]validation.Validation{
+                { TargetValue: body,
+                 Constraints: []validation.Constraint{	{Target: "body.NewSettings", Name: validation.Null, Rule: false ,
+                Chain: []validation.Constraint{	{Target: "body.NewSettings.NotebookTask", Name: validation.Null, Rule: false ,
+                Chain: []validation.Constraint{	{Target: "body.NewSettings.NotebookTask.NotebookPath", Name: validation.Null, Rule: true, Chain: nil },
+                }},
+                	{Target: "body.NewSettings.SparkPythonTask", Name: validation.Null, Rule: false ,
+                Chain: []validation.Constraint{	{Target: "body.NewSettings.SparkPythonTask.PythonFile", Name: validation.Null, Rule: true, Chain: nil },
+                }},
+                	{Target: "body.NewSettings.Schedule", Name: validation.Null, Rule: false ,
+                Chain: []validation.Constraint{	{Target: "body.NewSettings.Schedule.QuartzCronExpression", Name: validation.Null, Rule: true, Chain: nil },
+                	{Target: "body.NewSettings.Schedule.TimezoneID", Name: validation.Null, Rule: true, Chain: nil },
+                }},
+                }}}}}); err != nil {
+                return result, validation.NewError("jobs.BaseClient", "Post", err.Error())
+                }
+
+                    req, err := client.PostPreparer(ctx, body)
+        if err != nil {
+        err = autorest.NewErrorWithError(err, "jobs.BaseClient", "Post", nil , "Failure preparing request")
+        return
+        }
+
+                resp, err := client.PostSender(req)
+                if err != nil {
+                result.Response = resp
+                err = autorest.NewErrorWithError(err, "jobs.BaseClient", "Post", resp, "Failure sending request")
+                return
+                }
+
+                result, err = client.PostResponder(resp)
+                if err != nil {
+                err = autorest.NewErrorWithError(err, "jobs.BaseClient", "Post", resp, "Failure responding to request")
+                }
+
+        return
+        }
+
+        // PostPreparer prepares the Post request.
+        func (client BaseClient) PostPreparer(ctx context.Context, body ResetAttributes) (*http.Request, error) {
+            preparer := autorest.CreatePreparer(
+        autorest.AsContentType("application/json; charset=utf-8"),
+        autorest.AsGet(),
+        autorest.WithBaseURL(client.BaseURI),
+        autorest.WithPath("/jobs/reset"),
+        autorest.WithJSON(body))
+        return preparer.Prepare((&http.Request{}).WithContext(ctx))
+        }
+
+        // PostSender sends the Post request. The method will close the
+        // http.Response Body if it receives an error.
+        func (client BaseClient) PostSender(req *http.Request) (*http.Response, error) {
+                return client.Send(req, autorest.DoRetryForStatusCodes(client.RetryAttempts, client.RetryDuration, autorest.StatusCodesForRetry...))
+                }
+
+    // PostResponder handles the response to the Post request. The method always
+    // closes the http.Response Body.
+    func (client BaseClient) PostResponder(resp *http.Response) (result autorest.Response, err error) {
+        err = autorest.Respond(
+        resp,
+        client.ByInspecting(),
+        azure.WithErrorUnlessStatusCode(http.StatusOK),
+        autorest.ByClosing())
+        result.Response = resp
             return
         }
 

@@ -24,8 +24,50 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateResult'
+                $ref: '#/components/schemas/JobAttributes'
   
+  /jobs/delete:
+    post:
+      operationId: delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobAttributes'
+        required: true
+      responses:
+        '200':
+          description: OK
+
+  /jobs/get:
+    get:
+      operationId: get
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobAttributes'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetResult'
+
+  /jobs/reset:
+    get:
+      operationId: post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetAttributes'
+        required: true
+      responses:
+        '200':
+          description: OK
 
   /jobs/list:
     get:
@@ -81,7 +123,7 @@ components:
     CreateAttributes:
       $ref: '#/components/schemas/JobSettings'
 
-    CreateResult:
+    JobAttributes:
       type: object
       properties:
         job_id:
@@ -94,6 +136,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Job'
+  
+    GetResult:
+      type: object
+      properties:
+        job_id:
+          type: integer
+          format: int64
+        creator_user_name:
+          type: string
+        settings:
+          $ref: '#/components/schemas/JobSettings'
+        created_time:
+          type: integer
+          format: int64
+
+    ResetAttributes:
+      type: object
+      properties:
+        job_id:
+          type: integer
+          format: int64
+        new_settings:
+          $ref: '#/components/schemas/JobSettings'
 
     ClusterInstance:
       type: object

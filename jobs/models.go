@@ -81,6 +81,12 @@ const fqdn = "github.com/innovationnorway/go-databricks/jobs"
         return []Type{DASHBOARD,NOTEBOOK}
     }
 
+            // Attributes ...
+            type Attributes struct {
+            autorest.Response `json:"-"`
+            JobID *string `json:"job_id,omitempty"`
+            }
+
             // ClusterInstance ...
             type ClusterInstance struct {
             ClusterID *string `json:"cluster_id,omitempty"`
@@ -113,12 +119,6 @@ const fqdn = "github.com/innovationnorway/go-databricks/jobs"
             MaxConcurrentRuns *int32 `json:"max_concurrent_runs,omitempty"`
             }
 
-            // CreateResult ...
-            type CreateResult struct {
-            autorest.Response `json:"-"`
-            JobID *string `json:"job_id,omitempty"`
-            }
-
             // CronSchedule ...
             type CronSchedule struct {
             QuartzCronExpression *string `json:"quartz_cron_expression,omitempty"`
@@ -131,6 +131,15 @@ const fqdn = "github.com/innovationnorway/go-databricks/jobs"
             OnSuccess *[]string `json:"on_success,omitempty"`
             OnFailure *[]string `json:"on_failure,omitempty"`
             NoAlertForSkippedRuns *bool `json:"no_alert_for_skipped_runs,omitempty"`
+            }
+
+            // GetResult ...
+            type GetResult struct {
+            autorest.Response `json:"-"`
+            JobID *int64 `json:"job_id,omitempty"`
+            CreatorUserName *string `json:"creator_user_name,omitempty"`
+            Settings *CreateAttributes `json:"settings,omitempty"`
+            CreatedTime *int64 `json:"created_time,omitempty"`
             }
 
             // Job ...
@@ -170,6 +179,12 @@ const fqdn = "github.com/innovationnorway/go-databricks/jobs"
                 }
                 return json.Marshal(objectMap)
         }
+
+            // ResetAttributes ...
+            type ResetAttributes struct {
+            JobID *int64 `json:"job_id,omitempty"`
+            NewSettings *CreateAttributes `json:"new_settings,omitempty"`
+            }
 
             // Run ...
             type Run struct {
