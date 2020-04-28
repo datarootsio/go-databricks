@@ -65,3 +65,27 @@ go:
   package-name: github.com/innovationnorway/go-databricks/secrets
   user-agent: 'go-databricks/version secrets'
 ```
+
+## Libraries
+
+``` yaml $(libraries)
+input-file: libraries.yaml
+
+go:
+  namespace: libraries
+  output-folder: libraries
+  package-name: github.com/innovationnorway/go-databricks/libraries
+  user-agent: 'go-databricks/version libraries'
+```
+
+## Jobs
+
+``` yaml $(jobs)
+input-file: jobs.yaml
+
+go:
+  namespace: jobs
+  output-folder: jobs
+  package-name: github.com/innovationnorway/go-databricks/jobs
+  user-agent: 'go-databricks/version jobs'
+```

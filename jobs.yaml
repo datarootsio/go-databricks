@@ -1,0 +1,296 @@
+openapi: 3.0.0
+
+info:
+  title: Databricks Jobs API
+  description: Databricks REST API
+  version: 0.1.0
+
+servers:
+- url: /api/2.0
+
+paths:
+  /jobs/list:
+    post:
+      operationId: list
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Job'
+        required: true
+      responses:
+        '200':
+          description: OK
+
+components:
+  schemas:
+    RunLifeCycleState:
+      type: string
+      enum:
+        - PENDING
+        - RUNNING
+        - TERMINATING
+        - TERMINATED
+        - SKIPPED
+        - INTERNAL_ERROR
+
+    RunResultState:
+      type: string
+      enum:
+        - SUCCESS
+        - FAILED
+        - TIMEDOUT
+        - CANCELED
+
+    TriggerType:
+      type: string
+      enum:
+        - PERIODIC
+        - ONE_TIME
+        - RETRY
+
+    ViewType:
+      type: string
+      enum:
+        - NOTEBOOK
+        - DASHBOARD
+
+    ViewsToExport:
+      type: string
+      enum:
+        - CODE
+        - DASHBOARDS
+        - ALL
+
+    ClusterInstance:
+      type: object
+      properties:
+        cluster_id:
+          type: string
+        spark_context_id:
+          type: string
+
+    ClusterSpec:
+      type: object
+      properties:
+        existing_cluster_id:
+          type: string
+        new_cluster:
+          $ref: '#/components/schemas/NewCluster'
+        libraries:
+          type: array
+          items:
+            $ref: 'libraries.yaml/components/schemas/Library'
+
+    CronSchedule:
+      type: object
+      properties:
+        quartz_cron_expression:
+          type: string
+        timezone_id:
+          type: string
+      required:
+        - quartz_cron_expression
+        - timezone_id	
+
+    Job:
+      type: object
+      properties:
+        job_id:
+          type: integer
+          format: int64
+        creator_user_name:
+          type: string
+        settings:
+          $ref: '#/components/schemas/JobSettings'
+        created_time:
+          type: integer
+          format: int64
+
+    JobTask:
+      type: object
+      properties:
+        notebook_task:
+          $ref: '#/components/schemas/NotebookTask'
+        spark_jar_task:
+          $ref: '#/components/schemas/SparkJarTask'
+        spark_python_task:
+          $ref: '#/components/schemas/SparkPythonTask'
+        spark_submit_task:
+          $ref: '#/components/schemas/SparkSubmitTask'
+
+    JobEmailNotifications:
+      type: object
+      properties:
+        on_start:
+          type: array
+          items:
+            type: string
+        on_success:
+          type: array
+          items:
+            type: string
+        on_failure:
+          type: array
+          items:
+            type: string
+        no_alert_for_skipped_runs:
+          type: boolean
+
+    JobSettings:
+      type: object
+      properties:
+        existing_cluster_id:
+          type: string
+        new_cluster:
+          $ref: '#/components/schemas/NewCluster'
+        notebook_task:
+          $ref: '#/components/schemas/NotebookTask'
+        spark_jar_task:
+          $ref: '#/components/schemas/SparkJarTask'
+        spark_python_task:
+          $ref: '#/components/schemas/SparkPythonTask'
+        spark_submit_task:
+          $ref: '#/components/schemas/SparkSubmitTask'
+    
+    NewCluster:
+      $ref: "clusters.yaml/components/schemas/ClusterAttributes"
+
+    NotebookOutput:
+      type: object
+      properties:
+        result:
+          type: string
+        truncated:
+          type: boolean
+
+    NotebookTask:
+      type: object
+      properties:
+        notebook_path:
+          type: string
+        base_parameters:
+          additionalProperties:
+            $ref: '#/components/schemas/ParamPair'
+      required:
+        - notebook_path
+
+    ParamPair:
+      type: object
+      additionalProperties:
+        type: string
+
+    Run:
+      type: object
+      properties:
+        job_id:
+          type: integer
+          format: int64
+        run_id:
+          type: integer
+          format: int64
+        creator_user_name:
+          type: string
+        number_in_job:
+          type: integer
+          format: int64
+        original_attempt_run_id:
+          type: integer
+          format: int64
+        state:
+            $ref: '#/components/schemas/RunState'
+        schedule:
+          $ref: '#/components/schemas/CronSchedule'
+        task:
+          $ref: '#/components/schemas/JobTask'
+        cluster_spec:
+          $ref: '#/components/schemas/ClusterSpec'
+        cluster_instance:
+          $ref: '#/components/schemas/ClusterInstance'
+        overriding_parameters:
+          $ref: '#/components/schemas/RunParameters'
+        start_time:
+          type: integer
+          format: int64
+        setup_duration:
+          type: integer
+          format: int64
+        execution_duration:
+          type: integer
+          format: int64
+        cleanup_duration:
+          type: integer
+          format: int64
+        trigger:
+          $ref: '#/components/schemas/TriggerType'
+
+    RunParameters:
+      type: object
+      properties:
+        jar_params:
+          type: array
+          items:
+            type: string
+        notebook_params:
+          additionalProperties:
+            $ref: '#/components/schemas/ParamPair'
+        python_params:
+          type: array
+          items:
+            type: string
+        spark_submit_params:
+          type: array
+          items:
+            type: string
+
+    RunState:
+      type: object
+      properties:
+        life_cycle_state:
+          $ref: '#/components/schemas/RunLifeCycleState'
+        result_state:
+          $ref: '#/components/schemas/RunResultState'
+        state_message:
+          type: string
+
+    SparkJarTask:
+      type: object
+      properties:
+        jar_uri:
+          type: string
+        main_class_name:
+          type: string
+        parameters:
+          type: array
+          items:
+            type: string
+
+    SparkPythonTask:
+      type: object
+      properties:
+        python_file:
+          type: string
+        parameters:
+          type: array
+          items:
+            type: string
+      required:
+        - python_file
+
+    SparkSubmitTask:
+      type: object
+      properties:
+        parameters:
+          type: array
+          items:
+            type: string
+
+    ViewItem:
+      type: object
+      properties:
+        content:
+          type: string
+        name:
+          type: string
+        type:
+          $ref: '#/components/schemas/ViewType'
