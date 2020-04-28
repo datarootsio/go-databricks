@@ -39,32 +39,97 @@ func NewWithBaseURI(baseURI string, ) BaseClient {
     }
 }
 
-    // List sends the list request.
-    func (client BaseClient) List(ctx context.Context, body Job) (result autorest.Response, err error) {
+    // Create sends the create request.
+    func (client BaseClient) Create(ctx context.Context, body CreateAttributes) (result CreateResult, err error) {
         if tracing.IsEnabled() {
-            ctx = tracing.StartSpan(ctx, fqdn + "/BaseClient.List")
+            ctx = tracing.StartSpan(ctx, fqdn + "/BaseClient.Create")
             defer func() {
                 sc := -1
-                if result.Response != nil {
-                    sc = result.Response.StatusCode
+                if result.Response.Response != nil {
+                    sc = result.Response.Response.StatusCode
                 }
                 tracing.EndSpan(ctx, sc, err)
             }()
         }
                 if err := validation.Validate([]validation.Validation{
                 { TargetValue: body,
-                 Constraints: []validation.Constraint{	{Target: "body.Settings", Name: validation.Null, Rule: false ,
-                Chain: []validation.Constraint{	{Target: "body.Settings.NotebookTask", Name: validation.Null, Rule: false ,
-                Chain: []validation.Constraint{	{Target: "body.Settings.NotebookTask.NotebookPath", Name: validation.Null, Rule: true, Chain: nil },
+                 Constraints: []validation.Constraint{	{Target: "body.NotebookTask", Name: validation.Null, Rule: false ,
+                Chain: []validation.Constraint{	{Target: "body.NotebookTask.NotebookPath", Name: validation.Null, Rule: true, Chain: nil },
                 }},
-                	{Target: "body.Settings.SparkPythonTask", Name: validation.Null, Rule: false ,
-                Chain: []validation.Constraint{	{Target: "body.Settings.SparkPythonTask.PythonFile", Name: validation.Null, Rule: true, Chain: nil },
+                	{Target: "body.SparkPythonTask", Name: validation.Null, Rule: false ,
+                Chain: []validation.Constraint{	{Target: "body.SparkPythonTask.PythonFile", Name: validation.Null, Rule: true, Chain: nil },
                 }},
+                	{Target: "body.Schedule", Name: validation.Null, Rule: false ,
+                Chain: []validation.Constraint{	{Target: "body.Schedule.QuartzCronExpression", Name: validation.Null, Rule: true, Chain: nil },
+                	{Target: "body.Schedule.TimezoneID", Name: validation.Null, Rule: true, Chain: nil },
                 }}}}}); err != nil {
-                return result, validation.NewError("jobs.BaseClient", "List", err.Error())
+                return result, validation.NewError("jobs.BaseClient", "Create", err.Error())
                 }
 
-                    req, err := client.ListPreparer(ctx, body)
+                    req, err := client.CreatePreparer(ctx, body)
+        if err != nil {
+        err = autorest.NewErrorWithError(err, "jobs.BaseClient", "Create", nil , "Failure preparing request")
+        return
+        }
+
+                resp, err := client.CreateSender(req)
+                if err != nil {
+                result.Response = autorest.Response{Response: resp}
+                err = autorest.NewErrorWithError(err, "jobs.BaseClient", "Create", resp, "Failure sending request")
+                return
+                }
+
+                result, err = client.CreateResponder(resp)
+                if err != nil {
+                err = autorest.NewErrorWithError(err, "jobs.BaseClient", "Create", resp, "Failure responding to request")
+                }
+
+        return
+        }
+
+        // CreatePreparer prepares the Create request.
+        func (client BaseClient) CreatePreparer(ctx context.Context, body CreateAttributes) (*http.Request, error) {
+            preparer := autorest.CreatePreparer(
+        autorest.AsContentType("application/json; charset=utf-8"),
+        autorest.AsPost(),
+        autorest.WithBaseURL(client.BaseURI),
+        autorest.WithPath("/jobs/create"),
+        autorest.WithJSON(body))
+        return preparer.Prepare((&http.Request{}).WithContext(ctx))
+        }
+
+        // CreateSender sends the Create request. The method will close the
+        // http.Response Body if it receives an error.
+        func (client BaseClient) CreateSender(req *http.Request) (*http.Response, error) {
+                return client.Send(req, autorest.DoRetryForStatusCodes(client.RetryAttempts, client.RetryDuration, autorest.StatusCodesForRetry...))
+                }
+
+    // CreateResponder handles the response to the Create request. The method always
+    // closes the http.Response Body.
+    func (client BaseClient) CreateResponder(resp *http.Response) (result CreateResult, err error) {
+        err = autorest.Respond(
+        resp,
+        client.ByInspecting(),
+        azure.WithErrorUnlessStatusCode(http.StatusOK),
+        autorest.ByUnmarshallingJSON(&result),
+        autorest.ByClosing())
+        result.Response = autorest.Response{Response: resp}
+            return
+        }
+
+    // List sends the list request.
+    func (client BaseClient) List(ctx context.Context) (result ListResult, err error) {
+        if tracing.IsEnabled() {
+            ctx = tracing.StartSpan(ctx, fqdn + "/BaseClient.List")
+            defer func() {
+                sc := -1
+                if result.Response.Response != nil {
+                    sc = result.Response.Response.StatusCode
+                }
+                tracing.EndSpan(ctx, sc, err)
+            }()
+        }
+            req, err := client.ListPreparer(ctx)
         if err != nil {
         err = autorest.NewErrorWithError(err, "jobs.BaseClient", "List", nil , "Failure preparing request")
         return
@@ -72,7 +137,7 @@ func NewWithBaseURI(baseURI string, ) BaseClient {
 
                 resp, err := client.ListSender(req)
                 if err != nil {
-                result.Response = resp
+                result.Response = autorest.Response{Response: resp}
                 err = autorest.NewErrorWithError(err, "jobs.BaseClient", "List", resp, "Failure sending request")
                 return
                 }
@@ -86,13 +151,11 @@ func NewWithBaseURI(baseURI string, ) BaseClient {
         }
 
         // ListPreparer prepares the List request.
-        func (client BaseClient) ListPreparer(ctx context.Context, body Job) (*http.Request, error) {
+        func (client BaseClient) ListPreparer(ctx context.Context) (*http.Request, error) {
             preparer := autorest.CreatePreparer(
-        autorest.AsContentType("application/json; charset=utf-8"),
-        autorest.AsPost(),
+        autorest.AsGet(),
         autorest.WithBaseURL(client.BaseURI),
-        autorest.WithPath("/jobs/list"),
-        autorest.WithJSON(body))
+        autorest.WithPath("/jobs/list"))
         return preparer.Prepare((&http.Request{}).WithContext(ctx))
         }
 
@@ -104,13 +167,14 @@ func NewWithBaseURI(baseURI string, ) BaseClient {
 
     // ListResponder handles the response to the List request. The method always
     // closes the http.Response Body.
-    func (client BaseClient) ListResponder(resp *http.Response) (result autorest.Response, err error) {
+    func (client BaseClient) ListResponder(resp *http.Response) (result ListResult, err error) {
         err = autorest.Respond(
         resp,
         client.ByInspecting(),
         azure.WithErrorUnlessStatusCode(http.StatusOK),
+        autorest.ByUnmarshallingJSON(&result),
         autorest.ByClosing())
-        result.Response = resp
+        result.Response = autorest.Response{Response: resp}
             return
         }
 

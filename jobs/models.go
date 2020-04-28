@@ -5,6 +5,7 @@ package jobs
 
 import (
     "encoding/json"
+    "github.com/Azure/go-autorest/autorest"
 )
 
 // The package's fully qualified name.
@@ -93,6 +94,31 @@ const fqdn = "github.com/innovationnorway/go-databricks/jobs"
             Libraries *[]interface{} `json:"libraries,omitempty"`
             }
 
+            // CreateAttributes ...
+            type CreateAttributes struct {
+            ExistingClusterID *string `json:"existing_cluster_id,omitempty"`
+            NewCluster interface{} `json:"new_cluster,omitempty"`
+            NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
+            SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
+            SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
+            SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
+            Name *string `json:"name,omitempty"`
+            Libraries *[]interface{} `json:"libraries,omitempty"`
+            EmailNotification *EmailNotifications `json:"email_notification,omitempty"`
+            TimeoutSeconds *int32 `json:"timeout_seconds,omitempty"`
+            MaxRetries *int32 `json:"max_retries,omitempty"`
+            MinRetryIntervalMillis *int32 `json:"min_retry_interval_millis,omitempty"`
+            RetryOnTimeout *bool `json:"retry_on_timeout,omitempty"`
+            Schedule *CronSchedule `json:"schedule,omitempty"`
+            MaxConcurrentRuns *int32 `json:"max_concurrent_runs,omitempty"`
+            }
+
+            // CreateResult ...
+            type CreateResult struct {
+            autorest.Response `json:"-"`
+            JobID *string `json:"job_id,omitempty"`
+            }
+
             // CronSchedule ...
             type CronSchedule struct {
             QuartzCronExpression *string `json:"quartz_cron_expression,omitempty"`
@@ -111,8 +137,14 @@ const fqdn = "github.com/innovationnorway/go-databricks/jobs"
             type Job struct {
             JobID *int64 `json:"job_id,omitempty"`
             CreatorUserName *string `json:"creator_user_name,omitempty"`
-            Settings *Settings `json:"settings,omitempty"`
+            Settings *CreateAttributes `json:"settings,omitempty"`
             CreatedTime *int64 `json:"created_time,omitempty"`
+            }
+
+            // ListResult ...
+            type ListResult struct {
+            autorest.Response `json:"-"`
+            JobsProperty *[]Job `json:"jobs,omitempty"`
             }
 
             // NotebookOutput ...
@@ -193,16 +225,6 @@ const fqdn = "github.com/innovationnorway/go-databricks/jobs"
             // ResultState - Possible values include: 'SUCCESS', 'FAILED', 'TIMEDOUT', 'CANCELED'
             ResultState ResultState `json:"result_state,omitempty"`
             StateMessage *string `json:"state_message,omitempty"`
-            }
-
-            // Settings ...
-            type Settings struct {
-            ExistingClusterID *string `json:"existing_cluster_id,omitempty"`
-            NewCluster interface{} `json:"new_cluster,omitempty"`
-            NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
-            SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
-            SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
-            SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
             }
 
             // SparkJarTask ...

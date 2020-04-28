@@ -68,7 +68,7 @@ components:
     AllClusterStatusesResult:
       type: object
       properties:
-        secrets:
+        statuses:
           type: array
           items:
             $ref: '#/components/schemas/ClusterLibraryStatuses'
@@ -86,7 +86,7 @@ components:
       properties:
         cluster_id:
           type: string
-        secrets:
+        library_statuses:
           type: array
           items:
             $ref: '#/components/schemas/LibraryFullStatus'

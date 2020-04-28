@@ -9,18 +9,34 @@ servers:
 - url: /api/2.0
 
 paths:
-  /jobs/list:
+  /jobs/create:
     post:
-      operationId: list
+      operationId: create
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Job'
+              $ref: '#/components/schemas/CreateAttributes'
         required: true
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateResult'
+  
+
+  /jobs/list:
+    get:
+      operationId: list
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResult'
 
 components:
   schemas:
@@ -61,6 +77,23 @@ components:
         - CODE
         - DASHBOARDS
         - ALL
+
+    CreateAttributes:
+      $ref: '#/components/schemas/JobSettings'
+
+    CreateResult:
+      type: object
+      properties:
+        job_id:
+          type: string
+
+    ListResult:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Job'
 
     ClusterInstance:
       type: object
@@ -152,6 +185,30 @@ components:
           $ref: '#/components/schemas/SparkPythonTask'
         spark_submit_task:
           $ref: '#/components/schemas/SparkSubmitTask'
+        name:
+          type: string
+        libraries:
+          type: array
+          items:
+            $ref: 'libraries.yaml/components/schemas/Library'
+        email_notification:
+          $ref: '#/components/schemas/JobEmailNotifications'
+        timeout_seconds:
+          type: integer
+          format: int32
+        max_retries:
+          type: integer
+          format: int32
+        min_retry_interval_millis:
+          type: integer
+          format: int32
+        retry_on_timeout:
+          type: boolean
+        schedule:
+          $ref: '#/components/schemas/CronSchedule'
+        max_concurrent_runs:
+          type: integer
+          format: int32
     
     NewCluster:
       $ref: "clusters.yaml/components/schemas/ClusterAttributes"

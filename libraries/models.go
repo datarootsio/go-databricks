@@ -35,7 +35,7 @@ const fqdn = "github.com/innovationnorway/go-databricks/libraries"
             // AllClusterStatusesResult ...
             type AllClusterStatusesResult struct {
             autorest.Response `json:"-"`
-            Secrets *[]ClusterLibraryStatuses `json:"secrets,omitempty"`
+            Statuses *[]ClusterLibraryStatuses `json:"statuses,omitempty"`
             }
 
             // ClusterLibraryStatuses ...
@@ -53,7 +53,7 @@ const fqdn = "github.com/innovationnorway/go-databricks/libraries"
             type ClusterStatusResult struct {
             autorest.Response `json:"-"`
             ClusterID *string `json:"cluster_id,omitempty"`
-            Secrets *[]LibraryFullStatus `json:"secrets,omitempty"`
+            LibraryStatuses *[]LibraryFullStatus `json:"library_statuses,omitempty"`
             }
 
             // InstallAttributes ...

@@ -6,12 +6,12 @@ package jobsapi
 import (
     "context"
     "github.com/innovationnorway/go-databricks/jobs"
-    "github.com/Azure/go-autorest/autorest"
 )
 
         // BaseClientAPI contains the set of methods on the BaseClient type.
         type BaseClientAPI interface {
-            List(ctx context.Context, body jobs.Job) (result autorest.Response, err error)
+            Create(ctx context.Context, body jobs.CreateAttributes) (result jobs.CreateResult, err error)
+            List(ctx context.Context) (result jobs.ListResult, err error)
         }
 
         var _ BaseClientAPI = (*jobs.BaseClient)(nil)
