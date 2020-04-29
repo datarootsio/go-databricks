@@ -1,0 +1,734 @@
+openapi: 3.0.0
+
+info:
+  title: Databricks Jobs API
+  description: Databricks REST API
+  version: 0.1.0
+
+servers:
+- url: /api/2.0
+
+paths:
+  /jobs/create:
+    post:
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAttributes'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobAttributes'
+  
+  /jobs/delete:
+    post:
+      operationId: delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobAttributes'
+        required: true
+      responses:
+        '200':
+          description: OK
+
+  /jobs/get:
+    get:
+      operationId: get
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobAttributes'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetResult'
+
+  /jobs/reset:
+    get:
+      operationId: post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetAttributes'
+        required: true
+      responses:
+        '200':
+          description: OK
+
+  /jobs/list:
+    get:
+      operationId: list
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResult'
+
+  /jobs/run-now:
+    post:
+      operationId: run-now
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RunNowAttributes'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunNowResult'
+
+  /jobs/runs/submit:
+    post:
+      operationId: runs-submit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RunsSubmitAttributes'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunsSubmitResult'
+
+  /jobs/runs/list:
+    get:
+      operationId: runs-list
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RunsListAttributes'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunsListResult'
+
+  /jobs/runs/get:
+    get:
+      operationId: runs-get
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RunsGetAttributes'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunsGetResult'
+
+  /jobs/runs/export:
+    get:
+      operationId: runs-export
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RunsExportAttributes'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunsExportResult'
+
+  /jobs/runs/cancel:
+    post:
+      operationId: runs-cancel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RunsExportAttributes'
+      responses:
+        '200':
+          description: OK
+
+  /jobs/runs/get-output:
+    get:
+      operationId: runs-get-output
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RunsGetOutputAttributes'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunsGetOutputResult'
+
+  /jobs/runs/delete:
+    post:
+      operationId: runs-delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RunsDeleteAttributes'
+      responses:
+        '200':
+          description: OK
+
+components:
+  schemas:
+    RunLifeCycleState:
+      type: string
+      enum:
+        - PENDING
+        - RUNNING
+        - TERMINATING
+        - TERMINATED
+        - SKIPPED
+        - INTERNAL_ERROR
+
+    RunResultState:
+      type: string
+      enum:
+        - SUCCESS
+        - FAILED
+        - TIMEDOUT
+        - CANCELED
+
+    TriggerType:
+      type: string
+      enum:
+        - PERIODIC
+        - ONE_TIME
+        - RETRY
+
+    ViewType:
+      type: string
+      enum:
+        - NOTEBOOK
+        - DASHBOARD
+
+    ViewsToExport:
+      type: string
+      enum:
+        - CODE
+        - DASHBOARDS
+        - ALL
+
+    CreateAttributes:
+      $ref: '#/components/schemas/JobSettings'
+
+    JobAttributes:
+      type: object
+      properties:
+        job_id:
+          type: string
+
+    ListResult:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Job'
+  
+    GetResult:
+      type: object
+      properties:
+        job_id:
+          type: integer
+          format: int64
+        creator_user_name:
+          type: string
+        settings:
+          $ref: '#/components/schemas/JobSettings'
+        created_time:
+          type: integer
+          format: int64
+
+    ResetAttributes:
+      type: object
+      properties:
+        job_id:
+          type: integer
+          format: int64
+        new_settings:
+          $ref: '#/components/schemas/JobSettings'
+
+    RunNowAttributes:
+      type: object
+      properties:
+        job_id:
+          type: integer
+          format: int64
+        jar_params:
+          type: array
+          items:
+            type: string
+        notebook_params:
+          additionalProperties:
+            $ref: '#/components/schemas/ParamPair'
+        python_params:
+          type: array
+          items:
+            type: string
+        spark_submit_params:
+          type: array
+          items:
+            type: string
+
+    RunNowResult:
+      type: object
+      properties:
+        run_id:
+          type: integer
+          format: int64
+        number_in_job:
+          type: integer
+          format: int64
+
+    RunsSubmitAttributes:
+      type: object
+      properties:
+        existing_cluster_id:
+          type: string
+        new_cluster:
+          $ref: '#/components/schemas/NewCluster'
+        notebook_task:
+          $ref: '#/components/schemas/NotebookTask'
+        spark_jar_task:
+          $ref: '#/components/schemas/SparkJarTask'
+        spark_python_task:
+          $ref: '#/components/schemas/SparkPythonTask'
+        spark_submit_task:
+          $ref: '#/components/schemas/SparkSubmitTask'
+        run_name:
+          type: string
+        libraries:
+          type: array
+          items:
+            $ref: 'libraries.yaml/components/schemas/Library'
+        timeout_seconds:
+          type: integer
+          format: int32
+        idempotency_token:
+          type: string
+
+    RunsSubmitResult:
+      type: object
+      properties:
+        run_id:
+          type: integer
+          format: int64
+
+    RunsListAttributes:
+      type: object
+      properties:
+        active_only:
+          type: boolean
+        completed_only:
+          type: boolean
+        job_id:
+          type: integer
+          format: int64
+        offset:
+          type: integer
+          format: int32
+        limit:
+          type: integer
+          format: int32
+
+    RunsListResult:
+      type: object
+      properties:
+        run_id:
+          type: array
+          items:
+            $ref: '#/components/schemas/Run'
+        has_more: 
+          type: boolean
+    
+    RunsGetAttributes:
+      type: object
+      properties:
+        run_id:
+          type: integer
+          format: int64
+
+    RunsGetResult:
+      type: object
+      properties:
+        job_id:
+          type: integer
+          format: int64
+        run_id:
+          type: integer
+          format: int64
+        number_in_job:
+          type: integer
+          format: int64
+        original_attempt_run_id:
+          type: integer
+          format: int64
+        state:
+            $ref: '#/components/schemas/RunState'
+        schedule:
+          $ref: '#/components/schemas/CronSchedule'
+        task:
+          $ref: '#/components/schemas/JobTask'
+        cluster_spec:
+          $ref: '#/components/schemas/ClusterSpec'
+        cluster_instance:
+          $ref: '#/components/schemas/ClusterInstance'
+        overriding_parameters:
+          $ref: '#/components/schemas/RunParameters'
+        start_time:
+          type: integer
+          format: int64
+        setup_duration:
+          type: integer
+          format: int64
+        execution_duration:
+          type: integer
+          format: int64
+        cleanup_duration:
+          type: integer
+          format: int64
+        trigger:
+          $ref: '#/components/schemas/TriggerType'
+        creator_user_name:
+          type: string
+        run_page_url:
+          type: string
+  
+    RunsExportAttributes:
+      type: object
+      properties:
+        run_id:
+          type: integer
+          format: int64
+        views_to_export:
+          type: array
+          items:
+            $ref: '#/components/schemas/ViewsToExport'   
+
+    RunsExportResult:
+      type: object
+      properties:
+        views:
+          type: array
+          items:
+            $ref: '#/components/schemas/ViewItem'
+
+    RunsCancelAttributes:
+      type: object
+      properties:
+        run_id:
+          type: integer
+          format: int64
+
+    RunsGetOutputAttributes:
+      type: object
+      properties:
+        run_id:
+          type: integer
+          format: int64
+
+    RunsGetOutputResult:
+      type: object
+      properties:
+        notebook_output:
+          $ref: '#/components/schemas/NotebookOutput'
+        error:
+          type: string
+        metadata:
+          $ref: '#/components/schemas/Run'
+
+    RunsDeleteAttributes:
+      type: object
+      properties:
+        run_id:
+          type: integer
+          format: int64
+
+    ClusterInstance:
+      type: object
+      properties:
+        cluster_id:
+          type: string
+        spark_context_id:
+          type: string
+
+    ClusterSpec:
+      type: object
+      properties:
+        existing_cluster_id:
+          type: string
+        new_cluster:
+          $ref: '#/components/schemas/NewCluster'
+        libraries:
+          type: array
+          items:
+            $ref: 'libraries.yaml/components/schemas/Library'
+
+    CronSchedule:
+      type: object
+      properties:
+        quartz_cron_expression:
+          type: string
+        timezone_id:
+          type: string
+      required:
+        - quartz_cron_expression
+        - timezone_id	
+
+    Job:
+      type: object
+      properties:
+        job_id:
+          type: integer
+          format: int64
+        creator_user_name:
+          type: string
+        settings:
+          $ref: '#/components/schemas/JobSettings'
+        created_time:
+          type: integer
+          format: int64
+
+    JobTask:
+      type: object
+      properties:
+        notebook_task:
+          $ref: '#/components/schemas/NotebookTask'
+        spark_jar_task:
+          $ref: '#/components/schemas/SparkJarTask'
+        spark_python_task:
+          $ref: '#/components/schemas/SparkPythonTask'
+        spark_submit_task:
+          $ref: '#/components/schemas/SparkSubmitTask'
+
+    JobEmailNotifications:
+      type: object
+      properties:
+        on_start:
+          type: array
+          items:
+            type: string
+        on_success:
+          type: array
+          items:
+            type: string
+        on_failure:
+          type: array
+          items:
+            type: string
+        no_alert_for_skipped_runs:
+          type: boolean
+
+    JobSettings:
+      type: object
+      properties:
+        existing_cluster_id:
+          type: string
+        new_cluster:
+          $ref: '#/components/schemas/NewCluster'
+        notebook_task:
+          $ref: '#/components/schemas/NotebookTask'
+        spark_jar_task:
+          $ref: '#/components/schemas/SparkJarTask'
+        spark_python_task:
+          $ref: '#/components/schemas/SparkPythonTask'
+        spark_submit_task:
+          $ref: '#/components/schemas/SparkSubmitTask'
+        name:
+          type: string
+        libraries:
+          type: array
+          items:
+            $ref: 'libraries.yaml/components/schemas/Library'
+        email_notification:
+          $ref: '#/components/schemas/JobEmailNotifications'
+        timeout_seconds:
+          type: integer
+          format: int32
+        max_retries:
+          type: integer
+          format: int32
+        min_retry_interval_millis:
+          type: integer
+          format: int32
+        retry_on_timeout:
+          type: boolean
+        schedule:
+          $ref: '#/components/schemas/CronSchedule'
+        max_concurrent_runs:
+          type: integer
+          format: int32
+    
+    NewCluster:
+      $ref: "clusters.yaml/components/schemas/ClusterAttributes"
+
+    NotebookOutput:
+      type: object
+      properties:
+        result:
+          type: string
+        truncated:
+          type: boolean
+
+    NotebookTask:
+      type: object
+      properties:
+        notebook_path:
+          type: string
+        base_parameters:
+          additionalProperties:
+            $ref: '#/components/schemas/ParamPair'
+      required:
+        - notebook_path
+
+    ParamPair:
+      type: object
+      additionalProperties:
+        type: string
+
+    Run:
+      type: object
+      properties:
+        job_id:
+          type: integer
+          format: int64
+        run_id:
+          type: integer
+          format: int64
+        creator_user_name:
+          type: string
+        number_in_job:
+          type: integer
+          format: int64
+        original_attempt_run_id:
+          type: integer
+          format: int64
+        state:
+            $ref: '#/components/schemas/RunState'
+        schedule:
+          $ref: '#/components/schemas/CronSchedule'
+        task:
+          $ref: '#/components/schemas/JobTask'
+        cluster_spec:
+          $ref: '#/components/schemas/ClusterSpec'
+        cluster_instance:
+          $ref: '#/components/schemas/ClusterInstance'
+        overriding_parameters:
+          $ref: '#/components/schemas/RunParameters'
+        start_time:
+          type: integer
+          format: int64
+        setup_duration:
+          type: integer
+          format: int64
+        execution_duration:
+          type: integer
+          format: int64
+        cleanup_duration:
+          type: integer
+          format: int64
+        trigger:
+          $ref: '#/components/schemas/TriggerType'
+
+    RunParameters:
+      type: object
+      properties:
+        jar_params:
+          type: array
+          items:
+            type: string
+        notebook_params:
+          additionalProperties:
+            $ref: '#/components/schemas/ParamPair'
+        python_params:
+          type: array
+          items:
+            type: string
+        spark_submit_params:
+          type: array
+          items:
+            type: string
+
+    RunState:
+      type: object
+      properties:
+        life_cycle_state:
+          $ref: '#/components/schemas/RunLifeCycleState'
+        result_state:
+          $ref: '#/components/schemas/RunResultState'
+        state_message:
+          type: string
+
+    SparkJarTask:
+      type: object
+      properties:
+        jar_uri:
+          type: string
+        main_class_name:
+          type: string
+        parameters:
+          type: array
+          items:
+            type: string
+
+    SparkPythonTask:
+      type: object
+      properties:
+        python_file:
+          type: string
+        parameters:
+          type: array
+          items:
+            type: string
+      required:
+        - python_file
+
+    SparkSubmitTask:
+      type: object
+      properties:
+        parameters:
+          type: array
+          items:
+            type: string
+
+    ViewItem:
+      type: object
+      properties:
+        content:
+          type: string
+        name:
+          type: string
+        type:
+          $ref: '#/components/schemas/ViewType'

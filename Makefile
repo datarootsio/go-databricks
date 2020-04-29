@@ -12,6 +12,8 @@ generate:
 	autorest --groups
 	autorest --workspace
 	autorest --secrets
+	autorest --libraries
+	autorest --jobs
 
 test:
 	go test ./...
@@ -22,4 +24,6 @@ validate:
 	  --input-file=dbfs.yaml \
 	  --input-file=groups.yaml \
 	  --input-file=workspace.yaml \
-	  --input-file=secrets.yaml
+	  --input-file=secrets.yaml \
+	  --input-file=libraries.yaml \
+	  --input-file=jobs.yaml

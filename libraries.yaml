@@ -1,0 +1,195 @@
+openapi: 3.0.0
+
+info:
+  title: Databricks Libraries API
+  description: Databricks REST API
+  version: 0.1.0
+
+servers:
+- url: /api/2.0
+
+paths:
+  /libraries/all-cluster-statuses:
+    get:
+      operationId: all-cluster-statuses
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllClusterStatusesResult'
+
+  /libraries/cluster-status:
+    get:
+      operationId: cluster-status
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClusterStatusAttributes'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterStatusResult'
+
+  /libraries/install:
+    post:
+      operationId: install
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstallAttributes'
+        required: true
+      responses:
+        '200':
+          description: OK
+
+  /libraries/uninstall:
+    post:
+      operationId: uninstall
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstallAttributes'
+        required: true
+      responses:
+        '200':
+          description: OK
+
+components:
+  schemas:
+    AllClusterStatusesResult:
+      type: object
+      properties:
+        statuses:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClusterLibraryStatuses'
+
+    ClusterStatusAttributes:
+      type: object
+      properties:
+        cluster_id:
+          type: string
+      required:
+        - cluster_id
+
+    ClusterStatusResult:
+      type: object
+      properties:
+        cluster_id:
+          type: string
+        library_statuses:
+          type: array
+          items:
+            $ref: '#/components/schemas/LibraryFullStatus'
+
+    InstallAttributes:
+      type: object
+      properties:
+        cluster_id:
+          type: string
+        libraries:
+          type: array
+          items:
+            $ref: '#/components/schemas/Library' 
+      required:
+        - cluster_id
+        - libraries
+
+    ScopeBackendType:
+      type: string
+      enum:
+        - DATABRICKS
+
+    LibraryInstallStatus:
+      type: string
+      enum:
+        - PENDING
+        - RESOLVING
+        - INSTALLING
+        - INSTALLED
+        - FAILED
+        - UNINSTALL_ON_RESTART
+
+    ClusterLibraryStatuses:
+      type: object
+      properties:
+        cluster_id:
+          type: string
+        scopes:
+          type: array
+          items:
+            $ref: '#/components/schemas/LibraryFullStatus'
+
+    Library:
+      type: object
+      properties:
+        jar:
+          type: string
+        egg:
+          type: string
+        whl:
+          type: string
+        pypi:
+          $ref: '#/components/schemas/PythonPyPiLibrary'
+        maven:
+          $ref: '#/components/schemas/MavenLibrary'  
+        cran:
+          $ref: '#/components/schemas/RCranLibrary'
+
+    LibraryFullStatus:
+      type: object
+      properties:
+        library:
+          $ref: '#/components/schemas/Library'
+        status:
+          $ref: '#/components/schemas/LibraryInstallStatus'  
+        messages:
+          type: array
+          items:
+            type: string
+        is_library_for_all_clusters:
+          type: boolean
+
+    MavenLibrary:
+      type: object
+      properties:
+        coordinates:
+          type: string
+        repo:
+          type: string  
+        exclusions:
+          type: array
+          items:
+            type: string
+      required:
+        - coordinates
+    
+    PythonPyPiLibrary:
+      type: object
+      properties:
+        package:
+          type: string
+        repo:
+          type: string  
+      required:
+        - package
+      
+    RCranLibrary:
+      type: object
+      properties:
+        package:
+          type: string
+        repo:
+          type: string  
+      required:
+        - package
+      
