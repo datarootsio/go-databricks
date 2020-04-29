@@ -67,6 +67,22 @@ const fqdn = "github.com/innovationnorway/go-databricks/jobs"
         return []Trigger{ONETIME,PERIODIC,RETRY}
     }
 
+        // Trigger1 enumerates the values for trigger 1.
+    type Trigger1 string
+
+    const (
+                // Trigger1ONETIME ...
+        Trigger1ONETIME Trigger1 = "ONE_TIME"
+                // Trigger1PERIODIC ...
+        Trigger1PERIODIC Trigger1 = "PERIODIC"
+                // Trigger1RETRY ...
+        Trigger1RETRY Trigger1 = "RETRY"
+            )
+    // PossibleTrigger1Values returns an array of possible values for the Trigger1 const type.
+    func PossibleTrigger1Values() []Trigger1 {
+        return []Trigger1{Trigger1ONETIME,Trigger1PERIODIC,Trigger1RETRY}
+    }
+
         // Type enumerates the values for type.
     type Type string
 
@@ -207,6 +223,43 @@ const fqdn = "github.com/innovationnorway/go-databricks/jobs"
             Trigger Trigger `json:"trigger,omitempty"`
             }
 
+            // RunNowAttributes ...
+            type RunNowAttributes struct {
+            JobID *int64 `json:"job_id,omitempty"`
+            JarParams *[]string `json:"jar_params,omitempty"`
+            NotebookParams map[string]map[string]*string `json:"notebook_params"`
+            PythonParams *[]string `json:"python_params,omitempty"`
+            SparkSubmitParams *[]string `json:"spark_submit_params,omitempty"`
+            }
+
+        // MarshalJSON is the custom marshaler for RunNowAttributes.
+        func (rna RunNowAttributes)MarshalJSON() ([]byte, error){
+        objectMap := make(map[string]interface{})
+                if(rna.JobID != nil) {
+                objectMap["job_id"] = rna.JobID
+                }
+                if(rna.JarParams != nil) {
+                objectMap["jar_params"] = rna.JarParams
+                }
+                if(rna.NotebookParams != nil) {
+                objectMap["notebook_params"] = rna.NotebookParams
+                }
+                if(rna.PythonParams != nil) {
+                objectMap["python_params"] = rna.PythonParams
+                }
+                if(rna.SparkSubmitParams != nil) {
+                objectMap["spark_submit_params"] = rna.SparkSubmitParams
+                }
+                return json.Marshal(objectMap)
+        }
+
+            // RunNowResult ...
+            type RunNowResult struct {
+            autorest.Response `json:"-"`
+            RunID *int64 `json:"run_id,omitempty"`
+            NumberInJob *int64 `json:"number_in_job,omitempty"`
+            }
+
             // RunParameters ...
             type RunParameters struct {
             JarParams *[]string `json:"jar_params,omitempty"`
@@ -232,6 +285,105 @@ const fqdn = "github.com/innovationnorway/go-databricks/jobs"
                 }
                 return json.Marshal(objectMap)
         }
+
+            // RunsCancelAttributes ...
+            type RunsCancelAttributes struct {
+            RunID *int64 `json:"run_id,omitempty"`
+            }
+
+            // RunsDeleteAttributes ...
+            type RunsDeleteAttributes struct {
+            RunID *int64 `json:"run_id,omitempty"`
+            }
+
+            // RunsExportAttributes ...
+            type RunsExportAttributes struct {
+            RunID *int64 `json:"run_id,omitempty"`
+            ViewsToExport *[]string `json:"views_to_export,omitempty"`
+            }
+
+            // RunsExportResult ...
+            type RunsExportResult struct {
+            autorest.Response `json:"-"`
+            Views *[]ViewItem `json:"views,omitempty"`
+            }
+
+            // RunsGetAttributes ...
+            type RunsGetAttributes struct {
+            RunID *int64 `json:"run_id,omitempty"`
+            }
+
+            // RunsGetOutputAttributes ...
+            type RunsGetOutputAttributes struct {
+            RunID *int64 `json:"run_id,omitempty"`
+            }
+
+            // RunsGetOutputResult ...
+            type RunsGetOutputResult struct {
+            autorest.Response `json:"-"`
+            NotebookOutput *NotebookOutput `json:"notebook_output,omitempty"`
+            Error *string `json:"error,omitempty"`
+            Metadata *Run `json:"metadata,omitempty"`
+            }
+
+            // RunsGetResult ...
+            type RunsGetResult struct {
+            autorest.Response `json:"-"`
+            JobID *int64 `json:"job_id,omitempty"`
+            RunID *int64 `json:"run_id,omitempty"`
+            NumberInJob *int64 `json:"number_in_job,omitempty"`
+            OriginalAttemptRunID *int64 `json:"original_attempt_run_id,omitempty"`
+            State *RunState `json:"state,omitempty"`
+            Schedule *CronSchedule `json:"schedule,omitempty"`
+            Task *Task `json:"task,omitempty"`
+            ClusterSpec *ClusterSpec `json:"cluster_spec,omitempty"`
+            ClusterInstance *ClusterInstance `json:"cluster_instance,omitempty"`
+            OverridingParameters *RunParameters `json:"overriding_parameters,omitempty"`
+            StartTime *int64 `json:"start_time,omitempty"`
+            SetupDuration *int64 `json:"setup_duration,omitempty"`
+            ExecutionDuration *int64 `json:"execution_duration,omitempty"`
+            CleanupDuration *int64 `json:"cleanup_duration,omitempty"`
+            // Trigger - Possible values include: 'Trigger1PERIODIC', 'Trigger1ONETIME', 'Trigger1RETRY'
+            Trigger Trigger1 `json:"trigger,omitempty"`
+            CreatorUserName *string `json:"creator_user_name,omitempty"`
+            RunPageURL *string `json:"run_page_url,omitempty"`
+            }
+
+            // RunsListAttributes ...
+            type RunsListAttributes struct {
+            ActiveOnly *bool `json:"active_only,omitempty"`
+            CompletedOnly *bool `json:"completed_only,omitempty"`
+            JobID *int64 `json:"job_id,omitempty"`
+            Offset *int32 `json:"offset,omitempty"`
+            Limit *int32 `json:"limit,omitempty"`
+            }
+
+            // RunsListResult ...
+            type RunsListResult struct {
+            autorest.Response `json:"-"`
+            RunID *[]Run `json:"run_id,omitempty"`
+            HasMore *bool `json:"has_more,omitempty"`
+            }
+
+            // RunsSubmitAttributes ...
+            type RunsSubmitAttributes struct {
+            ExistingClusterID *string `json:"existing_cluster_id,omitempty"`
+            NewCluster interface{} `json:"new_cluster,omitempty"`
+            NotebookTask *NotebookTask `json:"notebook_task,omitempty"`
+            SparkJarTask *SparkJarTask `json:"spark_jar_task,omitempty"`
+            SparkPythonTask *SparkPythonTask `json:"spark_python_task,omitempty"`
+            SparkSubmitTask *SparkSubmitTask `json:"spark_submit_task,omitempty"`
+            RunName *string `json:"run_name,omitempty"`
+            Libraries *[]interface{} `json:"libraries,omitempty"`
+            TimeoutSeconds *int32 `json:"timeout_seconds,omitempty"`
+            IdempotencyToken *string `json:"idempotency_token,omitempty"`
+            }
+
+            // RunsSubmitResult ...
+            type RunsSubmitResult struct {
+            autorest.Response `json:"-"`
+            RunID *int64 `json:"run_id,omitempty"`
+            }
 
             // RunState ...
             type RunState struct {

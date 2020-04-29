@@ -16,6 +16,14 @@ import (
             Get(ctx context.Context, body jobs.Attributes) (result jobs.GetResult, err error)
             List(ctx context.Context) (result jobs.ListResult, err error)
             Post(ctx context.Context, body jobs.ResetAttributes) (result autorest.Response, err error)
+            RunNow(ctx context.Context, body *jobs.RunNowAttributes) (result jobs.RunNowResult, err error)
+            RunsCancel(ctx context.Context, body *jobs.RunsExportAttributes) (result autorest.Response, err error)
+            RunsDelete(ctx context.Context, body *jobs.RunsDeleteAttributes) (result autorest.Response, err error)
+            RunsExport(ctx context.Context, body *jobs.RunsExportAttributes) (result jobs.RunsExportResult, err error)
+            RunsGet(ctx context.Context, body *jobs.RunsGetAttributes) (result jobs.RunsGetResult, err error)
+            RunsGetOutput(ctx context.Context, body *jobs.RunsGetOutputAttributes) (result jobs.RunsGetOutputResult, err error)
+            RunsList(ctx context.Context, body *jobs.RunsListAttributes) (result jobs.RunsListResult, err error)
+            RunsSubmit(ctx context.Context, body *jobs.RunsSubmitAttributes) (result jobs.RunsSubmitResult, err error)
         }
 
         var _ BaseClientAPI = (*jobs.BaseClient)(nil)

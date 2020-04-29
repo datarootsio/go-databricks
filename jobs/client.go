@@ -382,3 +382,542 @@ func NewWithBaseURI(baseURI string, ) BaseClient {
             return
         }
 
+    // RunNow sends the run now request.
+    func (client BaseClient) RunNow(ctx context.Context, body *RunNowAttributes) (result RunNowResult, err error) {
+        if tracing.IsEnabled() {
+            ctx = tracing.StartSpan(ctx, fqdn + "/BaseClient.RunNow")
+            defer func() {
+                sc := -1
+                if result.Response.Response != nil {
+                    sc = result.Response.Response.StatusCode
+                }
+                tracing.EndSpan(ctx, sc, err)
+            }()
+        }
+            req, err := client.RunNowPreparer(ctx, body)
+        if err != nil {
+        err = autorest.NewErrorWithError(err, "jobs.BaseClient", "RunNow", nil , "Failure preparing request")
+        return
+        }
+
+                resp, err := client.RunNowSender(req)
+                if err != nil {
+                result.Response = autorest.Response{Response: resp}
+                err = autorest.NewErrorWithError(err, "jobs.BaseClient", "RunNow", resp, "Failure sending request")
+                return
+                }
+
+                result, err = client.RunNowResponder(resp)
+                if err != nil {
+                err = autorest.NewErrorWithError(err, "jobs.BaseClient", "RunNow", resp, "Failure responding to request")
+                }
+
+        return
+        }
+
+        // RunNowPreparer prepares the RunNow request.
+        func (client BaseClient) RunNowPreparer(ctx context.Context, body *RunNowAttributes) (*http.Request, error) {
+            preparer := autorest.CreatePreparer(
+        autorest.AsContentType("application/json; charset=utf-8"),
+        autorest.AsPost(),
+        autorest.WithBaseURL(client.BaseURI),
+        autorest.WithPath("/jobs/run-now"))
+                if body != nil {
+                preparer = autorest.DecoratePreparer(preparer,
+                autorest.WithJSON(body))
+                }
+        return preparer.Prepare((&http.Request{}).WithContext(ctx))
+        }
+
+        // RunNowSender sends the RunNow request. The method will close the
+        // http.Response Body if it receives an error.
+        func (client BaseClient) RunNowSender(req *http.Request) (*http.Response, error) {
+                return client.Send(req, autorest.DoRetryForStatusCodes(client.RetryAttempts, client.RetryDuration, autorest.StatusCodesForRetry...))
+                }
+
+    // RunNowResponder handles the response to the RunNow request. The method always
+    // closes the http.Response Body.
+    func (client BaseClient) RunNowResponder(resp *http.Response) (result RunNowResult, err error) {
+        err = autorest.Respond(
+        resp,
+        client.ByInspecting(),
+        azure.WithErrorUnlessStatusCode(http.StatusOK),
+        autorest.ByUnmarshallingJSON(&result),
+        autorest.ByClosing())
+        result.Response = autorest.Response{Response: resp}
+            return
+        }
+
+    // RunsCancel sends the runs cancel request.
+    func (client BaseClient) RunsCancel(ctx context.Context, body *RunsExportAttributes) (result autorest.Response, err error) {
+        if tracing.IsEnabled() {
+            ctx = tracing.StartSpan(ctx, fqdn + "/BaseClient.RunsCancel")
+            defer func() {
+                sc := -1
+                if result.Response != nil {
+                    sc = result.Response.StatusCode
+                }
+                tracing.EndSpan(ctx, sc, err)
+            }()
+        }
+            req, err := client.RunsCancelPreparer(ctx, body)
+        if err != nil {
+        err = autorest.NewErrorWithError(err, "jobs.BaseClient", "RunsCancel", nil , "Failure preparing request")
+        return
+        }
+
+                resp, err := client.RunsCancelSender(req)
+                if err != nil {
+                result.Response = resp
+                err = autorest.NewErrorWithError(err, "jobs.BaseClient", "RunsCancel", resp, "Failure sending request")
+                return
+                }
+
+                result, err = client.RunsCancelResponder(resp)
+                if err != nil {
+                err = autorest.NewErrorWithError(err, "jobs.BaseClient", "RunsCancel", resp, "Failure responding to request")
+                }
+
+        return
+        }
+
+        // RunsCancelPreparer prepares the RunsCancel request.
+        func (client BaseClient) RunsCancelPreparer(ctx context.Context, body *RunsExportAttributes) (*http.Request, error) {
+            preparer := autorest.CreatePreparer(
+        autorest.AsContentType("application/json; charset=utf-8"),
+        autorest.AsPost(),
+        autorest.WithBaseURL(client.BaseURI),
+        autorest.WithPath("/jobs/runs/cancel"))
+                if body != nil {
+                preparer = autorest.DecoratePreparer(preparer,
+                autorest.WithJSON(body))
+                }
+        return preparer.Prepare((&http.Request{}).WithContext(ctx))
+        }
+
+        // RunsCancelSender sends the RunsCancel request. The method will close the
+        // http.Response Body if it receives an error.
+        func (client BaseClient) RunsCancelSender(req *http.Request) (*http.Response, error) {
+                return client.Send(req, autorest.DoRetryForStatusCodes(client.RetryAttempts, client.RetryDuration, autorest.StatusCodesForRetry...))
+                }
+
+    // RunsCancelResponder handles the response to the RunsCancel request. The method always
+    // closes the http.Response Body.
+    func (client BaseClient) RunsCancelResponder(resp *http.Response) (result autorest.Response, err error) {
+        err = autorest.Respond(
+        resp,
+        client.ByInspecting(),
+        azure.WithErrorUnlessStatusCode(http.StatusOK),
+        autorest.ByClosing())
+        result.Response = resp
+            return
+        }
+
+    // RunsDelete sends the runs delete request.
+    func (client BaseClient) RunsDelete(ctx context.Context, body *RunsDeleteAttributes) (result autorest.Response, err error) {
+        if tracing.IsEnabled() {
+            ctx = tracing.StartSpan(ctx, fqdn + "/BaseClient.RunsDelete")
+            defer func() {
+                sc := -1
+                if result.Response != nil {
+                    sc = result.Response.StatusCode
+                }
+                tracing.EndSpan(ctx, sc, err)
+            }()
+        }
+            req, err := client.RunsDeletePreparer(ctx, body)
+        if err != nil {
+        err = autorest.NewErrorWithError(err, "jobs.BaseClient", "RunsDelete", nil , "Failure preparing request")
+        return
+        }
+
+                resp, err := client.RunsDeleteSender(req)
+                if err != nil {
+                result.Response = resp
+                err = autorest.NewErrorWithError(err, "jobs.BaseClient", "RunsDelete", resp, "Failure sending request")
+                return
+                }
+
+                result, err = client.RunsDeleteResponder(resp)
+                if err != nil {
+                err = autorest.NewErrorWithError(err, "jobs.BaseClient", "RunsDelete", resp, "Failure responding to request")
+                }
+
+        return
+        }
+
+        // RunsDeletePreparer prepares the RunsDelete request.
+        func (client BaseClient) RunsDeletePreparer(ctx context.Context, body *RunsDeleteAttributes) (*http.Request, error) {
+            preparer := autorest.CreatePreparer(
+        autorest.AsContentType("application/json; charset=utf-8"),
+        autorest.AsPost(),
+        autorest.WithBaseURL(client.BaseURI),
+        autorest.WithPath("/jobs/runs/delete"))
+                if body != nil {
+                preparer = autorest.DecoratePreparer(preparer,
+                autorest.WithJSON(body))
+                }
+        return preparer.Prepare((&http.Request{}).WithContext(ctx))
+        }
+
+        // RunsDeleteSender sends the RunsDelete request. The method will close the
+        // http.Response Body if it receives an error.
+        func (client BaseClient) RunsDeleteSender(req *http.Request) (*http.Response, error) {
+                return client.Send(req, autorest.DoRetryForStatusCodes(client.RetryAttempts, client.RetryDuration, autorest.StatusCodesForRetry...))
+                }
+
+    // RunsDeleteResponder handles the response to the RunsDelete request. The method always
+    // closes the http.Response Body.
+    func (client BaseClient) RunsDeleteResponder(resp *http.Response) (result autorest.Response, err error) {
+        err = autorest.Respond(
+        resp,
+        client.ByInspecting(),
+        azure.WithErrorUnlessStatusCode(http.StatusOK),
+        autorest.ByClosing())
+        result.Response = resp
+            return
+        }
+
+    // RunsExport sends the runs export request.
+    func (client BaseClient) RunsExport(ctx context.Context, body *RunsExportAttributes) (result RunsExportResult, err error) {
+        if tracing.IsEnabled() {
+            ctx = tracing.StartSpan(ctx, fqdn + "/BaseClient.RunsExport")
+            defer func() {
+                sc := -1
+                if result.Response.Response != nil {
+                    sc = result.Response.Response.StatusCode
+                }
+                tracing.EndSpan(ctx, sc, err)
+            }()
+        }
+            req, err := client.RunsExportPreparer(ctx, body)
+        if err != nil {
+        err = autorest.NewErrorWithError(err, "jobs.BaseClient", "RunsExport", nil , "Failure preparing request")
+        return
+        }
+
+                resp, err := client.RunsExportSender(req)
+                if err != nil {
+                result.Response = autorest.Response{Response: resp}
+                err = autorest.NewErrorWithError(err, "jobs.BaseClient", "RunsExport", resp, "Failure sending request")
+                return
+                }
+
+                result, err = client.RunsExportResponder(resp)
+                if err != nil {
+                err = autorest.NewErrorWithError(err, "jobs.BaseClient", "RunsExport", resp, "Failure responding to request")
+                }
+
+        return
+        }
+
+        // RunsExportPreparer prepares the RunsExport request.
+        func (client BaseClient) RunsExportPreparer(ctx context.Context, body *RunsExportAttributes) (*http.Request, error) {
+            preparer := autorest.CreatePreparer(
+        autorest.AsContentType("application/json; charset=utf-8"),
+        autorest.AsGet(),
+        autorest.WithBaseURL(client.BaseURI),
+        autorest.WithPath("/jobs/runs/export"))
+                if body != nil {
+                preparer = autorest.DecoratePreparer(preparer,
+                autorest.WithJSON(body))
+                }
+        return preparer.Prepare((&http.Request{}).WithContext(ctx))
+        }
+
+        // RunsExportSender sends the RunsExport request. The method will close the
+        // http.Response Body if it receives an error.
+        func (client BaseClient) RunsExportSender(req *http.Request) (*http.Response, error) {
+                return client.Send(req, autorest.DoRetryForStatusCodes(client.RetryAttempts, client.RetryDuration, autorest.StatusCodesForRetry...))
+                }
+
+    // RunsExportResponder handles the response to the RunsExport request. The method always
+    // closes the http.Response Body.
+    func (client BaseClient) RunsExportResponder(resp *http.Response) (result RunsExportResult, err error) {
+        err = autorest.Respond(
+        resp,
+        client.ByInspecting(),
+        azure.WithErrorUnlessStatusCode(http.StatusOK),
+        autorest.ByUnmarshallingJSON(&result),
+        autorest.ByClosing())
+        result.Response = autorest.Response{Response: resp}
+            return
+        }
+
+    // RunsGet sends the runs get request.
+    func (client BaseClient) RunsGet(ctx context.Context, body *RunsGetAttributes) (result RunsGetResult, err error) {
+        if tracing.IsEnabled() {
+            ctx = tracing.StartSpan(ctx, fqdn + "/BaseClient.RunsGet")
+            defer func() {
+                sc := -1
+                if result.Response.Response != nil {
+                    sc = result.Response.Response.StatusCode
+                }
+                tracing.EndSpan(ctx, sc, err)
+            }()
+        }
+            req, err := client.RunsGetPreparer(ctx, body)
+        if err != nil {
+        err = autorest.NewErrorWithError(err, "jobs.BaseClient", "RunsGet", nil , "Failure preparing request")
+        return
+        }
+
+                resp, err := client.RunsGetSender(req)
+                if err != nil {
+                result.Response = autorest.Response{Response: resp}
+                err = autorest.NewErrorWithError(err, "jobs.BaseClient", "RunsGet", resp, "Failure sending request")
+                return
+                }
+
+                result, err = client.RunsGetResponder(resp)
+                if err != nil {
+                err = autorest.NewErrorWithError(err, "jobs.BaseClient", "RunsGet", resp, "Failure responding to request")
+                }
+
+        return
+        }
+
+        // RunsGetPreparer prepares the RunsGet request.
+        func (client BaseClient) RunsGetPreparer(ctx context.Context, body *RunsGetAttributes) (*http.Request, error) {
+            preparer := autorest.CreatePreparer(
+        autorest.AsContentType("application/json; charset=utf-8"),
+        autorest.AsGet(),
+        autorest.WithBaseURL(client.BaseURI),
+        autorest.WithPath("/jobs/runs/get"))
+                if body != nil {
+                preparer = autorest.DecoratePreparer(preparer,
+                autorest.WithJSON(body))
+                }
+        return preparer.Prepare((&http.Request{}).WithContext(ctx))
+        }
+
+        // RunsGetSender sends the RunsGet request. The method will close the
+        // http.Response Body if it receives an error.
+        func (client BaseClient) RunsGetSender(req *http.Request) (*http.Response, error) {
+                return client.Send(req, autorest.DoRetryForStatusCodes(client.RetryAttempts, client.RetryDuration, autorest.StatusCodesForRetry...))
+                }
+
+    // RunsGetResponder handles the response to the RunsGet request. The method always
+    // closes the http.Response Body.
+    func (client BaseClient) RunsGetResponder(resp *http.Response) (result RunsGetResult, err error) {
+        err = autorest.Respond(
+        resp,
+        client.ByInspecting(),
+        azure.WithErrorUnlessStatusCode(http.StatusOK),
+        autorest.ByUnmarshallingJSON(&result),
+        autorest.ByClosing())
+        result.Response = autorest.Response{Response: resp}
+            return
+        }
+
+    // RunsGetOutput sends the runs get output request.
+    func (client BaseClient) RunsGetOutput(ctx context.Context, body *RunsGetOutputAttributes) (result RunsGetOutputResult, err error) {
+        if tracing.IsEnabled() {
+            ctx = tracing.StartSpan(ctx, fqdn + "/BaseClient.RunsGetOutput")
+            defer func() {
+                sc := -1
+                if result.Response.Response != nil {
+                    sc = result.Response.Response.StatusCode
+                }
+                tracing.EndSpan(ctx, sc, err)
+            }()
+        }
+            req, err := client.RunsGetOutputPreparer(ctx, body)
+        if err != nil {
+        err = autorest.NewErrorWithError(err, "jobs.BaseClient", "RunsGetOutput", nil , "Failure preparing request")
+        return
+        }
+
+                resp, err := client.RunsGetOutputSender(req)
+                if err != nil {
+                result.Response = autorest.Response{Response: resp}
+                err = autorest.NewErrorWithError(err, "jobs.BaseClient", "RunsGetOutput", resp, "Failure sending request")
+                return
+                }
+
+                result, err = client.RunsGetOutputResponder(resp)
+                if err != nil {
+                err = autorest.NewErrorWithError(err, "jobs.BaseClient", "RunsGetOutput", resp, "Failure responding to request")
+                }
+
+        return
+        }
+
+        // RunsGetOutputPreparer prepares the RunsGetOutput request.
+        func (client BaseClient) RunsGetOutputPreparer(ctx context.Context, body *RunsGetOutputAttributes) (*http.Request, error) {
+            preparer := autorest.CreatePreparer(
+        autorest.AsContentType("application/json; charset=utf-8"),
+        autorest.AsGet(),
+        autorest.WithBaseURL(client.BaseURI),
+        autorest.WithPath("/jobs/runs/get-output"))
+                if body != nil {
+                preparer = autorest.DecoratePreparer(preparer,
+                autorest.WithJSON(body))
+                }
+        return preparer.Prepare((&http.Request{}).WithContext(ctx))
+        }
+
+        // RunsGetOutputSender sends the RunsGetOutput request. The method will close the
+        // http.Response Body if it receives an error.
+        func (client BaseClient) RunsGetOutputSender(req *http.Request) (*http.Response, error) {
+                return client.Send(req, autorest.DoRetryForStatusCodes(client.RetryAttempts, client.RetryDuration, autorest.StatusCodesForRetry...))
+                }
+
+    // RunsGetOutputResponder handles the response to the RunsGetOutput request. The method always
+    // closes the http.Response Body.
+    func (client BaseClient) RunsGetOutputResponder(resp *http.Response) (result RunsGetOutputResult, err error) {
+        err = autorest.Respond(
+        resp,
+        client.ByInspecting(),
+        azure.WithErrorUnlessStatusCode(http.StatusOK),
+        autorest.ByUnmarshallingJSON(&result),
+        autorest.ByClosing())
+        result.Response = autorest.Response{Response: resp}
+            return
+        }
+
+    // RunsList sends the runs list request.
+    func (client BaseClient) RunsList(ctx context.Context, body *RunsListAttributes) (result RunsListResult, err error) {
+        if tracing.IsEnabled() {
+            ctx = tracing.StartSpan(ctx, fqdn + "/BaseClient.RunsList")
+            defer func() {
+                sc := -1
+                if result.Response.Response != nil {
+                    sc = result.Response.Response.StatusCode
+                }
+                tracing.EndSpan(ctx, sc, err)
+            }()
+        }
+            req, err := client.RunsListPreparer(ctx, body)
+        if err != nil {
+        err = autorest.NewErrorWithError(err, "jobs.BaseClient", "RunsList", nil , "Failure preparing request")
+        return
+        }
+
+                resp, err := client.RunsListSender(req)
+                if err != nil {
+                result.Response = autorest.Response{Response: resp}
+                err = autorest.NewErrorWithError(err, "jobs.BaseClient", "RunsList", resp, "Failure sending request")
+                return
+                }
+
+                result, err = client.RunsListResponder(resp)
+                if err != nil {
+                err = autorest.NewErrorWithError(err, "jobs.BaseClient", "RunsList", resp, "Failure responding to request")
+                }
+
+        return
+        }
+
+        // RunsListPreparer prepares the RunsList request.
+        func (client BaseClient) RunsListPreparer(ctx context.Context, body *RunsListAttributes) (*http.Request, error) {
+            preparer := autorest.CreatePreparer(
+        autorest.AsContentType("application/json; charset=utf-8"),
+        autorest.AsGet(),
+        autorest.WithBaseURL(client.BaseURI),
+        autorest.WithPath("/jobs/runs/list"))
+                if body != nil {
+                preparer = autorest.DecoratePreparer(preparer,
+                autorest.WithJSON(body))
+                }
+        return preparer.Prepare((&http.Request{}).WithContext(ctx))
+        }
+
+        // RunsListSender sends the RunsList request. The method will close the
+        // http.Response Body if it receives an error.
+        func (client BaseClient) RunsListSender(req *http.Request) (*http.Response, error) {
+                return client.Send(req, autorest.DoRetryForStatusCodes(client.RetryAttempts, client.RetryDuration, autorest.StatusCodesForRetry...))
+                }
+
+    // RunsListResponder handles the response to the RunsList request. The method always
+    // closes the http.Response Body.
+    func (client BaseClient) RunsListResponder(resp *http.Response) (result RunsListResult, err error) {
+        err = autorest.Respond(
+        resp,
+        client.ByInspecting(),
+        azure.WithErrorUnlessStatusCode(http.StatusOK),
+        autorest.ByUnmarshallingJSON(&result),
+        autorest.ByClosing())
+        result.Response = autorest.Response{Response: resp}
+            return
+        }
+
+    // RunsSubmit sends the runs submit request.
+    func (client BaseClient) RunsSubmit(ctx context.Context, body *RunsSubmitAttributes) (result RunsSubmitResult, err error) {
+        if tracing.IsEnabled() {
+            ctx = tracing.StartSpan(ctx, fqdn + "/BaseClient.RunsSubmit")
+            defer func() {
+                sc := -1
+                if result.Response.Response != nil {
+                    sc = result.Response.Response.StatusCode
+                }
+                tracing.EndSpan(ctx, sc, err)
+            }()
+        }
+                if err := validation.Validate([]validation.Validation{
+                { TargetValue: body,
+                 Constraints: []validation.Constraint{	{Target: "body", Name: validation.Null, Rule: false ,
+                Chain: []validation.Constraint{	{Target: "body.NotebookTask", Name: validation.Null, Rule: false ,
+                Chain: []validation.Constraint{	{Target: "body.NotebookTask.NotebookPath", Name: validation.Null, Rule: true, Chain: nil },
+                }},
+                	{Target: "body.SparkPythonTask", Name: validation.Null, Rule: false ,
+                Chain: []validation.Constraint{	{Target: "body.SparkPythonTask.PythonFile", Name: validation.Null, Rule: true, Chain: nil },
+                }},
+                }}}}}); err != nil {
+                return result, validation.NewError("jobs.BaseClient", "RunsSubmit", err.Error())
+                }
+
+                    req, err := client.RunsSubmitPreparer(ctx, body)
+        if err != nil {
+        err = autorest.NewErrorWithError(err, "jobs.BaseClient", "RunsSubmit", nil , "Failure preparing request")
+        return
+        }
+
+                resp, err := client.RunsSubmitSender(req)
+                if err != nil {
+                result.Response = autorest.Response{Response: resp}
+                err = autorest.NewErrorWithError(err, "jobs.BaseClient", "RunsSubmit", resp, "Failure sending request")
+                return
+                }
+
+                result, err = client.RunsSubmitResponder(resp)
+                if err != nil {
+                err = autorest.NewErrorWithError(err, "jobs.BaseClient", "RunsSubmit", resp, "Failure responding to request")
+                }
+
+        return
+        }
+
+        // RunsSubmitPreparer prepares the RunsSubmit request.
+        func (client BaseClient) RunsSubmitPreparer(ctx context.Context, body *RunsSubmitAttributes) (*http.Request, error) {
+            preparer := autorest.CreatePreparer(
+        autorest.AsContentType("application/json; charset=utf-8"),
+        autorest.AsPost(),
+        autorest.WithBaseURL(client.BaseURI),
+        autorest.WithPath("/jobs/runs/submit"))
+                if body != nil {
+                preparer = autorest.DecoratePreparer(preparer,
+                autorest.WithJSON(body))
+                }
+        return preparer.Prepare((&http.Request{}).WithContext(ctx))
+        }
+
+        // RunsSubmitSender sends the RunsSubmit request. The method will close the
+        // http.Response Body if it receives an error.
+        func (client BaseClient) RunsSubmitSender(req *http.Request) (*http.Response, error) {
+                return client.Send(req, autorest.DoRetryForStatusCodes(client.RetryAttempts, client.RetryDuration, autorest.StatusCodesForRetry...))
+                }
+
+    // RunsSubmitResponder handles the response to the RunsSubmit request. The method always
+    // closes the http.Response Body.
+    func (client BaseClient) RunsSubmitResponder(resp *http.Response) (result RunsSubmitResult, err error) {
+        err = autorest.Respond(
+        resp,
+        client.ByInspecting(),
+        azure.WithErrorUnlessStatusCode(http.StatusOK),
+        autorest.ByUnmarshallingJSON(&result),
+        autorest.ByClosing())
+        result.Response = autorest.Response{Response: resp}
+            return
+        }
+
